@@ -68,11 +68,13 @@ window.addEventListener('DOMContentLoaded', function() {
             } else {
                 hours.textContent = t.hours;
             };
+
             if (t.minutes <= 9) {
                 minutes.textContent = '0' + t.minutes;
             } else {
                 minutes.textContent = t.minutes;
             };
+
             if (t.seconds <= 9) {
                 seconds.textContent = '0' + t.seconds;
             } else {
@@ -89,4 +91,33 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 
     setClock('timer', deadLine);
+
+    //More
+
+    let more = document.querySelector('.more'),
+        overlay = document.querySelector('.overlay'),
+        moretabs = document.querySelectorAll('.description-btn'),
+        close = document.querySelector('.popup-close');
+    
+    more.addEventListener('click', function() {
+        overlay.style.display = 'block';
+        this.classList.add('more-splash');
+        document.body.style.overflow = 'hidden';
+    });
+    close.addEventListener('click', function() {
+        overlay.style.display = 'none';
+        more.classList.remove('more-splash');
+        document.body.style.overflow = '';
+    });
+
+    //more for tabs
+    for (let i = 0; i < moretabs.length; i++) {
+        moretabs[i].addEventListener('click', function() {
+            overlay.style.display = 'block';
+            this.classList.add('more-splash');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+
+    
 });
