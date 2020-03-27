@@ -1,123 +1,127 @@
 window.addEventListener('DOMContentLoaded', function() {
 
     'use strict';
+    //Classes
+    //class 'SwitchTabs' - класс, который мы используем для навигации по табам
+    class SwitchTabs {
+        constructor(a) {
+            this.a = a;
+        }
+        hide(a) {
+            for (let i = a; i < tabContent.length; i++) {
+                tabContent[i].classList.remove('show');
+                tabContent[i].classList.add('hide');
+            }
+        }
+        show(a) {
+            if (tabContent[a].classList.contains('hide')) {
+                tabContent[a].classList.remove('hide');
+                tabContent[a].classList.add('show');
+            }
+        }
+    };
+    //end of SwitchTabs class
+    //class 'TimeSet' - используем для запуска таймера
+    class TimeSet {
+        constructor(id, endtime) {
+            this.endtime = endtime;
+            this.id = id;
+        }
+        setClock(id, endtime) {
+            let timer = document.getElementById(id),
+                hours = timer.querySelector('.hours'),
+                minutes = timer.querySelector('.minutes'),
+                seconds = timer.querySelector('.seconds'),
+                timeInterval = setInterval(updateClock, 1000, endtime, hours, minutes, seconds);
+            
+            function updateClock(endtime, hours, minutes, seconds) {  
+                let 
+                    total = Date.parse(endtime) - Date.parse(new Date()),
+                    time = {
+                    'hours' : Math.floor((total/(1000*60*60))),
+                    'minutes' : Math.floor((total/1000/60) % 60),
+                    'seconds' : Math.floor((total/1000) % 60)
+                };
+
+                if (time.hours <= 9) {
+                    hours.textContent = '0' + time.hours;
+                } else {
+                    hours.textContent = time.hours;
+                };
+    
+                if (time.minutes <= 9) {
+                    minutes.textContent = '0' + time.minutes;
+                } else {
+                    minutes.textContent = time.minutes;
+                };
+    
+                if (time.seconds <= 9) {
+                    seconds.textContent = '0' + time.seconds;
+                } else {
+                    seconds.textContent = time.seconds;
+                };
+    
+                if (total <= 0) {
+                    clearInterval(timeInterval);
+                    hours.textContent = '0';
+                    minutes.textContent = '0';
+                    seconds.textContent = '0';
+                };
+            }
+        }
+    };
+    //end class "TimeSet"
+    //end of classes
+
     let tab = document.querySelectorAll('.info-header-tab'),
         info = document.querySelector('.info-header'),
-        tabContent = document.querySelectorAll('.info-tabcontent');
-
-    function hideTabContent(a) {
-        for (let i = a; i < tabContent.length; i++) {
-            tabContent[i].classList.remove('show');
-            tabContent[i].classList.add('hide');
-        }
-    }
-
-    hideTabContent(1);
-
-    function showTabContent(b) {
-        if (tabContent[b].classList.contains('hide')) {
-            tabContent[b].classList.remove('hide');
-            tabContent[b].classList.add('show');
-        }
-    }
-
-    info.addEventListener('click', function(event) {
+        tabContent = document.querySelectorAll('.info-tabcontent'),
+        deadLine = '2020-06-24', //Дата обратного отсчета
+        time = new TimeSet,
+        tabs = new SwitchTabs;
+    
+    //Скрываем ненужные табы и добавляем обработчик события на "info-header"
+    tabs.hide(1); 
+    info.addEventListener('click', (event) => { 
         let target = event.target;
 
         if (target && target.classList.contains('info-header-tab')) {
             for (let i = 0; i < tab.length; i++) {
                 if (target == tab[i]) {
-                    hideTabContent(0);
-                    showTabContent(i);
+                    tabs.hide(0); // Используем метод hide() класса SwitchTab для скрытия ненужных табов
+                    tabs.show(i); // Используем метод show() класса SwitchTab для показа нужного таба
                     break;
                 }
             }
         }
     });
-
-    //Timer
-
-    let deadLine = '2020-05-24';
-
-    function getTimeRemaining(endtime) {
-        let t = Date.parse(endtime) - Date.parse(new Date()),
-            seconds = Math.floor((t/1000) % 60),
-            minutes = Math.floor((t/1000/60) % 60),
-            hours = Math.floor((t/(1000*60*60)));
-
-        return {
-            'total' : t,
-            'hours' : hours,
-            'minutes' : minutes,
-            'seconds' : seconds
-        };
-    }
-
-    function setClock(id, endtime) {
-        let timer = document.getElementById(id),
-            hours = timer.querySelector('.hours'),
-            minutes = timer.querySelector('.minutes'),
-            seconds = timer.querySelector('.seconds'),
-            timeInterval = setInterval(updateClock, 1000);
         
-        function updateClock() {
-            let t = getTimeRemaining(endtime);
-            
-            if (t.hours <= 9) {
-                hours.textContent = '0' + t.hours;
-            } else {
-                hours.textContent = t.hours;
-            };
+    time.setClock('timer', deadLine); // Запускаем обратный отсчет
 
-            if (t.minutes <= 9) {
-                minutes.textContent = '0' + t.minutes;
-            } else {
-                minutes.textContent = t.minutes;
-            };
-
-            if (t.seconds <= 9) {
-                seconds.textContent = '0' + t.seconds;
-            } else {
-                seconds.textContent = t.seconds;
-            };
-
-            if (t.total <= 0) {
-                clearInterval(timeInterval);
-                hours.textContent = '0';
-                minutes.textContent = '0';
-                seconds.textContent = '0';
-            }
-        }
-    }
-
-    setClock('timer', deadLine);
-
-    //More
+    //Код для открытия popup-окна формы обратной связи
 
     let more = document.querySelector('.more'),
         overlay = document.querySelector('.overlay'),
         moretabs = document.querySelectorAll('.description-btn'),
         close = document.querySelector('.popup-close');
-    
-    more.addEventListener('click', function() {
+
+    more.addEventListener('click', () => {
         overlay.style.display = 'block';
         this.classList.add('more-splash');
         document.body.style.overflow = 'hidden';
     });
-    close.addEventListener('click', function() {
+    close.addEventListener('click', () => {
         overlay.style.display = 'none';
         more.classList.remove('more-splash');
         document.body.style.overflow = '';
     });
 
-    //more for tabs
+    //Открываем форму обратной связи при клике на "Узнать больше" в табах
     for (let i = 0; i < moretabs.length; i++) {
-        moretabs[i].addEventListener('click', function() {
+        moretabs[i].addEventListener('click', () => {
             overlay.style.display = 'block';
             this.classList.add('more-splash');
             document.body.style.overflow = 'hidden';
         });
     }
-
-    
 });
