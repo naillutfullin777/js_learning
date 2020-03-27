@@ -12,7 +12,7 @@ class Option {
         
         newDiv.innerHTML = anyText;
         newDiv.style.cssText = `height: ${anyHeight}; width: ${anyWidth}; background-color: ${anyBg}; font-size: ${anyFontSize}; text-align: ${anyAlignText}`;
-        document.body.prepend(newDiv);
+        document.body.appendChild(newDiv);
     }
 }
 
