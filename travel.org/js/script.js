@@ -140,72 +140,48 @@ window.addEventListener('DOMContentLoaded', () => {
         statusMessage = document.createElement('div');
 
         statusMessage.classList.add('status');
+    
+    //Функция отправки POST
+    function send(form, input) {
+        let request = new XMLHttpRequest();
+            request.open('POST', 'server.php');
+            request.setRequestHeader('Content-Type', 'application/json; charset=utf8');
+
+        let formData = new FormData(form),
+                obj = {};
+
+        formData.forEach(function(value, key) {
+            obj[key] = value;
+        });
+
+        let json = JSON.stringify(obj);
+
+        request.send(json);
+
+        request.addEventListener('readystatechange', function() {
+            if (request.readyState < 4) {
+                statusMessage.innerHTML = message.loading;
+            } else if (request.readyState === 4 && request.status == 200) {
+                statusMessage.innerHTML = message.success;
+            } else {
+                statusMessage.innerHTML = message.failure;
+            }
+        });
+
+        for (let i = 0; i < input.length; i++) {
+            input[i].value = '';
+        }
+    };
 
         //Всплывающая форма
         popupForm.addEventListener('submit', function(event) {
             event.preventDefault();
             popupForm.appendChild(statusMessage);
-
-            let request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
-            request.setRequestHeader('Content-Type', 'application/json; charset=utf8');
-
-            let formData = new FormData(popupForm),
-                obj = {};
-
-            formData.forEach(function(value, key) {
-                obj[key] = value;
-            });
-
-            let json = JSON.stringify(obj);
-
-            request.send(json);
-
-            request.addEventListener('readystatechange', function() {
-                if (request.readyState < 4) {
-                    statusMessage.innerHTML = message.loading;
-                } else if (request.readyState === 4 && request.status == 200) {
-                    statusMessage.innerHTML = message.success;
-                } else {
-                    statusMessage.innerHTML = message.failure;
-                }
-            });
-
-            for (let i = 0; i < popupInput.length; i++) {
-                popupInput[i].value = '';
-            };
+            send(popupForm, popupInput);
         });
         contactForm.addEventListener('submit', function(event) {
             event.preventDefault();
             contactForm.appendChild(statusMessage);
-
-            let request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
-            request.setRequestHeader('Content-Type', 'application/json; charset=utf8');
-
-            let formData = new FormData(contactForm),
-                obj = {};
-
-            formData.forEach(function(value, key) {
-                obj[key] = value;
-            });
-
-            let json = JSON.stringify(obj);
-
-            request.send(json);
-
-            request.addEventListener('readystatechange', function() {
-                if (request.readyState < 4) {
-                    statusMessage.innerHTML = message.loading;
-                } else if (request.readyState === 4 && request.status == 200) {
-                    statusMessage.innerHTML = message.success;
-                } else {
-                    statusMessage.innerHTML = message.failure;
-                }
-            });
-
-            for (let i = 0; i < contactInput.length; i++) {
-                contactInput[i].value = '';
-            };
+            send(contactForm, contactInput);
         });
 });
