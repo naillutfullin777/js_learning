@@ -171,17 +171,18 @@ window.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < input.length; i++) {
             input[i].value = '';
         }
-    };
+    }; //конец функции "send"
 
-        //Всплывающая форма
-        popupForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            popupForm.appendChild(statusMessage);
-            send(popupForm, popupInput);
-        });
-        contactForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            contactForm.appendChild(statusMessage);
-            send(contactForm, contactInput);
-        });
+    //Всплывающая форма
+    popupForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        popupForm.appendChild(statusMessage);
+        send(popupForm, popupInput);
+    });
+    //Контактная форма
+    contactForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        contactForm.appendChild(statusMessage);
+        send(contactForm, contactInput);
+    });
 });
