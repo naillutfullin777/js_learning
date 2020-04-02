@@ -7,6 +7,7 @@ inputRub.addEventListener('input', function() {
 
         request.open('GET', 'current.json');
         request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        request.send();
     
         request.onload = function() {
             if (request.readyState === 4 && request.status == 200) {
@@ -19,7 +20,6 @@ inputRub.addEventListener('input', function() {
         request.onerror = function() {
             reject(Error("Сетевая ошибка"));
         };
-        request.send();
     });
     promise
         .then(

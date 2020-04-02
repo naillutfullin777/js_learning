@@ -118,7 +118,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //Открываем форму обратной связи при клике на "Узнать больше" в табах
     for (let i = 0; i < moretabs.length; i++) {
-        moretabs[i].addEventListener('click', () => {
+        moretabs[i].addEventListener('click', function() {
             overlay.style.display = 'block';
             this.classList.add('more-splash');
             document.body.style.overflow = 'hidden';
@@ -141,14 +141,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
         statusMessage.classList.add('status');
     
-    //Функция отправки POST
-    function send(form, input) {
+   //Функция отправки POST
+   function send(form, input) {
+        let promise = new Promise((resolve, reject) => {
         let request = new XMLHttpRequest();
             request.open('POST', 'server.php');
             request.setRequestHeader('Content-Type', 'application/json; charset=utf8');
 
         let formData = new FormData(form),
-                obj = {};
+            obj = {};
 
         formData.forEach(function(value, key) {
             obj[key] = value;
@@ -158,20 +159,31 @@ window.addEventListener('DOMContentLoaded', () => {
 
         request.send(json);
 
-        request.addEventListener('readystatechange', function() {
+        request.onload =  function() {
             if (request.readyState < 4) {
-                statusMessage.innerHTML = message.loading;
+                resolve(message.loading);
             } else if (request.readyState === 4 && request.status == 200) {
-                statusMessage.innerHTML = message.success;
+                resolve(message.success);
             } else {
-                statusMessage.innerHTML = message.failure;
+                reject(message.failure);
             }
-        });
-
+        };
         for (let i = 0; i < input.length; i++) {
             input[i].value = '';
         }
-    }; //конец функции "send"
+        });
+        promise.then(
+            result => {
+                statusMessage.innerHTML = result;
+                console.log('Done');
+            },
+            error => {
+                statusMessage.innerHTML = error;
+                console.log('Error');
+            }
+        );
+    };
+    //конец функции 
 
     //Всплывающая форма
     popupForm.addEventListener('submit', function(event) {
