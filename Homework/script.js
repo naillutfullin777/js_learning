@@ -7,4 +7,4 @@ $(document).ready(function() {
         $('.overlay').animate({opacity: 'hide'}, 3000);
         $('.modal').animate({height: 'hide'}, 3000);
     });
-});
+});г 
